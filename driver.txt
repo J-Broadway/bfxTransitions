@@ -1,0 +1,90 @@
+{
+	Tools = ordered() {
+		driver = Merge {
+			CtrlWZoom = false,
+			NameSet = true,
+			Inputs = {
+				PerformDepthMerge = Input { Value = 0, },
+				pan = Input {
+					SourceOp = "AnimPan",
+					Source = "Value",
+				},
+				Angle = Input {
+					SourceOp = "AnimAngle",
+					Source = "Value",
+				},
+				PanMode = Input { Value = "left", },
+				fxPivot = Input { Expression = "Point(gui.fxPointCenter.X, gui.fxPointCenter.Y)", },
+			},
+			ViewInfo = OperatorInfo { Pos = { 330, 49.5 } },
+			UserControls = ordered() {
+				pan = { INPID_InputControl = "SliderControl", INP_Integer = false, LINKID_DataType = "Number", LINKS_Name = "pan", },
+				xpan = { INPID_InputControl = "SliderControl", INP_Integer = false, LINKID_DataType = "Number", LINKS_Name = "xpan", },
+				ypan = { INPID_InputControl = "SliderControl", INP_Integer = false, LINKID_DataType = "Number", LINKS_Name = "ypan", },
+				Angle = {
+					INPID_InputControl = "SliderControl",
+					INP_Integer = false,
+					LINKID_DataType = "Number",
+					LINKS_Name = "Angle",
+				},
+				PanMode = { TEC_ReadOnly = false, LINKID_DataType = "Text", TEC_Wrap = false, INPID_InputControl = "TextEditControl", LINKS_Name = "PanMode", },
+				fxPivot = {
+					LINKS_Name = "Effect Pivot",
+					LINKID_DataType = "Point",
+					INPID_InputControl = "OffsetControl",
+					INPID_PreviewControl = "PointControl",
+				}
+			}
+		},
+		AnimPan = LUTLookup {
+			CtrlWZoom = false,
+			NameSet = true,
+			Inputs = {
+				Curve = Input { Value = FuID { "Easing" }, },
+				EaseIn = Input { Value = FuID { "Quart" }, },
+				EaseOut = Input { Value = FuID { "Cubic" }, },
+				Lookup = Input {
+					SourceOp = "AnimPanLookup",
+					Source = "Value",
+				},
+				Scale = Input { Expression = "floor(gui.panAmt)", },
+			},
+		},
+		AnimPanLookup = LUTBezier {
+			KeyColorSplines = {
+				[0] = {
+					[0] = { 0, RH = { 0.333333333333333, 0.333333333333333 }, Flags = { Linear = true } },
+					[1] = { 1, LH = { 0.666666666666667, 0.666666666666667 }, Flags = { Linear = true } }
+				}
+			},
+			SplineColor = { Red = 255, Green = 255, Blue = 255 },
+			NameSet = true,
+		},
+		AnimAngle = LUTLookup {
+			NameSet = true,
+			Inputs = {
+				Source = Input { Value = FuID { "Custom" }, },
+				Input = Input { Expression = "iif(gui.angle_invert==1,-driver.pan,driver.pan)/AnimPan.Scale", },
+				Lookup = Input {
+					SourceOp = "AnimAngleLookup",
+					Source = "Value",
+				},
+				Scale = Input {
+					Value = 45,
+					Expression = "gui.angle ",
+				},
+			},
+		},
+		AnimAngleLookup = LUTBezier {
+			KeyColorSplines = {
+				[0] = {
+					[0] = { 0, RH = { 0.333333333333333, 0.333333333333333 }, Flags = { Linear = true } },
+					[1] = { 1, LH = { 0.666666666666667, 0.666666666666667 }, Flags = { Linear = true } }
+				}
+			},
+			SplineColor = { Red = 255, Green = 255, Blue = 255 },
+			NameSet = true,
+		}
+	},
+	ActiveTool = "driver"
+}
