@@ -1,0 +1,2 @@
+- pTransform_1 motion blur checkbox needs to be linked to pTransform
+- DoD domain needs to be set. in order to remove alpha channel when the media doesn't take up the entire screen
